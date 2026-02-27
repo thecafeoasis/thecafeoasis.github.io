@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cafe Oasis</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Cormorant+Garamond:wght@300;400;500&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #F9F6EE;
+    --dark: #2A2A20;
+    --espresso: #828273;
+    --caramel: #95A776;
+    --gold: #FFDB58;
+    --muted: #828273;
+    --section-bg: #F0EFE6;
+  }
+
+  html { scroll-behavior: smooth; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background-color: var(--cream);
+    color: var(--dark);
+    font-family: 'Cormorant Garamond', serif;
+    min-height: 100vh;
+  }
+
+  /* HERO */
+  .hero {
+    background-color: var(--espresso);
+    color: var(--cream);
+    text-align: center;
+    padding: 60px 20px 50px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 50% 0%, rgba(149,167,118,0.3) 0%, transparent 70%);
+  }
+  .hero-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 14px;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.2s forwards;
+    position: relative; z-index: 1;
+  }
+  .hero-divider {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    margin: 20px auto 14px;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.6s forwards;
+    position: relative; z-index: 1;
+  }
+  .hero-divider span { width: 60px; height: 1px; background: var(--caramel); display: block; }
+  .hero-divider i { color: var(--gold); font-size: 1rem; }
+  .hero-sub {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.1rem;
+    font-weight: 300;
+    color: rgba(245,239,224,0.7);
+    letter-spacing: 0.05em;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.8s forwards;
+    position: relative; z-index: 1;
+  }
+
+  /* HERO QUICK-JUMP NAV */
+  .hero-nav {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 9px;
+    margin-top: 32px;
+    max-width: 680px;
+    margin-left: auto;
+    margin-right: auto;
+    opacity: 0;
+    animation: fadeUp 0.8s 1s forwards;
+    position: relative;
+    z-index: 1;
+  }
+  .hero-nav a {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.57rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(245,239,224,0.65);
+    text-decoration: none;
+    padding: 8px 13px;
+    border: 1px solid rgba(255,219,88,0.22);
+    border-radius: 2px;
+    transition: all 0.2s;
+  }
+  .hero-nav a:hover {
+    color: var(--gold);
+    border-color: var(--gold);
+    background: rgba(255,219,88,0.1);
+    transform: translateY(-1px);
+  }
+
+  /* STICKY NAV */
+  .nav-wrapper {
+    background: var(--espresso);
+    border-top: 1px solid rgba(149,167,118,0.3);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    overflow-x: auto;
+    scrollbar-width: none;
+    box-shadow: 0 2px 14px rgba(0,0,0,0.18);
+  }
+  .nav-wrapper::-webkit-scrollbar { display: none; }
+  .nav-tabs { display: flex; padding: 0 20px; min-width: max-content; }
+  .nav-tab {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.58rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(245,239,224,0.42);
+    padding: 15px 16px;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+    white-space: nowrap;
+    text-decoration: none;
+    display: block;
+  }
+  .nav-tab:hover { color: var(--gold); }
+  .nav-tab.active { color: var(--gold); border-bottom-color: var(--caramel); }
+
+  /* CONTENT */
+  .content { max-width: 900px; margin: 0 auto; padding: 0 20px 80px; }
+
+  /* SECTIONS */
+  .section {
+    padding: 64px 0 32px;
+    border-bottom: 1px solid rgba(130,130,115,0.15);
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.55s ease, transform 0.55s ease;
+  }
+  .section.visible { opacity: 1; transform: translateY(0); }
+  .section:last-child { border-bottom: none; }
+
+  .section-header { display: flex; align-items: flex-end; gap: 20px; margin-bottom: 10px; }
+  .section-number {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    color: var(--caramel);
+    letter-spacing: 0.15em;
+    padding-bottom: 6px;
+  }
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.8rem, 5vw, 2.8rem);
+    font-weight: 400;
+    color: var(--espresso);
+    line-height: 1;
+  }
+  .section-title em { font-style: italic; color: var(--caramel); }
+  .section-rule {
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(to right, var(--caramel) 0%, transparent 100%);
+    margin-bottom: 32px;
+    margin-top: 12px;
+  }
+  .size-note {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.15em;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 28px;
+    padding: 10px 14px;
+    background: var(--section-bg);
+    border-left: 3px solid var(--caramel);
+    display: inline-block;
+  }
+
+  /* MENU ITEMS */
+  .items-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0; }
+  @media (max-width: 580px) { .items-grid { grid-template-columns: 1fr; } }
+
+  .menu-item {
+    padding: 14px 10px 14px 0;
+    border-bottom: 1px solid rgba(130,130,115,0.1);
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    cursor: pointer;
+    position: relative;
+    transition: background 0.18s, padding-left 0.18s;
+    border-radius: 3px;
+  }
+  .menu-item:hover { background: rgba(149,167,118,0.09); padding-left: 10px; }
+  .menu-item:hover .item-dot { background: var(--gold); transform: scale(1.6); }
+  .menu-item:hover .item-name { color: var(--caramel); }
+  .menu-item.flash { background: rgba(255,219,88,0.15); }
+
+  .item-dot {
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: var(--caramel);
+    flex-shrink: 0;
+    position: relative; top: -1px;
+    transition: background 0.18s, transform 0.18s;
+  }
+  .item-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.05rem;
+    font-weight: 500;
+    color: var(--dark);
+    line-height: 1.3;
+    transition: color 0.18s;
+  }
+  .item-note {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.85rem;
+    color: var(--muted);
+    font-style: italic;
+    font-weight: 300;
+    display: block;
+    margin-top: 2px;
+  }
+
+  /* ADD-ONS */
+  .addons {
+    margin-top: 20px;
+    padding: 18px 20px;
+    background: var(--section-bg);
+    border: 1px solid rgba(149,167,118,0.2);
+  }
+  .addons-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.57rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--caramel);
+    margin-bottom: 12px;
+  }
+  .addons-list { display: flex; flex-wrap: wrap; gap: 8px; }
+  .addon-chip {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.9rem;
+    padding: 5px 14px;
+    border: 1px solid rgba(130,130,115,0.25);
+    color: var(--espresso);
+    background: white;
+    cursor: pointer;
+    transition: all 0.18s;
+    border-radius: 2px;
+    user-select: none;
+  }
+  .addon-chip:hover { background: rgba(255,219,88,0.15); border-color: var(--gold); }
+  .addon-chip.selected { background: var(--caramel); color: white; border-color: var(--caramel); }
+
+  /* SMOOTHIES */
+  .smoothie-list { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; }
+  .smoothie-chip {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.95rem;
+    padding: 8px 16px;
+    background: white;
+    border: 1px solid rgba(130,130,115,0.2);
+    color: var(--espresso);
+    cursor: pointer;
+    transition: all 0.18s;
+    border-radius: 2px;
+  }
+  .smoothie-chip:hover { background: var(--caramel); color: white; border-color: var(--caramel); }
+  .smoothie-chip.selected { background: var(--caramel); color: white; border-color: var(--caramel); }
+
+  /* BREAKFAST */
+  .breakfast-banner {
+    background: var(--espresso);
+    color: var(--cream);
+    padding: 22px 28px;
+    margin-bottom: 24px;
+    position: relative;
+    overflow: hidden;
+  }
+  .breakfast-banner::after {
+    content: '☕';
+    position: absolute; right: 20px; top: 50%;
+    transform: translateY(-50%);
+    font-size: 3rem; opacity: 0.08;
+  }
+  .bb-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.58rem; letter-spacing: 0.3em;
+    color: var(--gold); text-transform: uppercase; margin-bottom: 6px;
+  }
+  .bb-time { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-style: italic; }
+  .breakfast-items { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  @media (max-width: 480px) { .breakfast-items { grid-template-columns: 1fr; } }
+  .breakfast-combo {
+    padding: 16px;
+    background: var(--section-bg);
+    border-left: 3px solid var(--gold);
+    cursor: pointer;
+    transition: all 0.18s;
+  }
+  .breakfast-combo:hover { background: rgba(255,219,88,0.12); border-left-color: var(--caramel); transform: translateX(3px); }
+  .breakfast-combo.selected { border-left-color: var(--caramel); background: rgba(149,167,118,0.12); }
+  .combo-name { font-family: 'Cormorant Garamond', serif; font-size: 1rem; font-weight: 500; color: var(--espresso); }
+
+  /* TOAST */
+  .toast {
+    position: fixed;
+    bottom: 28px; left: 50%;
+    transform: translateX(-50%) translateY(16px);
+    background: var(--dark);
+    color: var(--gold);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.1em;
+    padding: 11px 22px;
+    border-radius: 2px;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.28s;
+    z-index: 999;
+    white-space: nowrap;
+    border-left: 3px solid var(--caramel);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  /* BACK TO TOP */
+  .back-top {
+    position: fixed;
+    bottom: 28px; right: 24px;
+    width: 42px; height: 42px;
+    background: var(--espresso);
+    color: var(--gold);
+    border: 1px solid rgba(255,219,88,0.3);
+    border-radius: 2px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    font-size: 1.1rem;
+    opacity: 0; pointer-events: none;
+    transition: all 0.3s;
+    text-decoration: none;
+    z-index: 200;
+  }
+  .back-top.visible { opacity: 1; pointer-events: all; }
+  .back-top:hover { background: var(--caramel); border-color: var(--caramel); color: white; transform: translateY(-2px); }
+
+  /* FOOTER */
+  .footer {
+    background: var(--espresso);
+    color: rgba(245,239,224,0.5);
+    text-align: center;
+    padding: 40px 20px;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+  .footer strong {
+    display: block;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem; font-weight: 400; font-style: italic;
+    color: var(--gold); letter-spacing: 0; text-transform: none; margin-bottom: 8px;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero" id="top">
+  <div style="display:flex;flex-direction:column;align-items:center;margin-bottom:20px;opacity:0;animation:fadeUp 0.8s 0.1s forwards;position:relative;z-index:1;">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 160" width="190" height="152">
+      <path d="M72 50 L82 120 Q100 132 118 120 L128 50 Z" fill="none" stroke="#FFDB58" stroke-width="2.5" stroke-linejoin="round"/>
+      <path d="M128 68 Q150 68 150 90 Q150 112 128 112" fill="none" stroke="#FFDB58" stroke-width="2.5" stroke-linecap="round"/>
+      <path d="M88 40 Q91 30 88 20" fill="none" stroke="#95A776" stroke-width="1.8" stroke-linecap="round"/>
+      <path d="M100 38 Q103 26 100 16" fill="none" stroke="#95A776" stroke-width="1.8" stroke-linecap="round"/>
+      <path d="M112 40 Q115 30 112 20" fill="none" stroke="#95A776" stroke-width="1.8" stroke-linecap="round"/>
+      <ellipse cx="100" cy="124" rx="36" ry="5" fill="none" stroke="#FFDB58" stroke-width="2"/>
+      <circle cx="100" cy="85" r="3.5" fill="#95A776" opacity="0.9"/>
+    </svg>
+    <div style="text-align:center;margin-top:4px;">
+      <div style="font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:0.45em;color:#95A776;text-transform:uppercase;margin-bottom:6px;">cafe</div>
+      <div style="font-family:'Playfair Display',serif;font-size:2.8rem;font-weight:400;letter-spacing:0.12em;color:#FFDB58;line-height:1;text-transform:uppercase;">Oasis</div>
+      <div style="height:1px;background:linear-gradient(to right,transparent,#95A776,transparent);margin-top:10px;"></div>
+    </div>
+  </div>
+
+  <div class="hero-tag">Your Neighborhood Café</div>
+  <div class="hero-divider"><span></span><i>✦</i><span></span></div>
+  <div class="hero-sub">Crafted with care · Served with warmth</div>
+
+  <!-- Quick-jump links in hero -->
+  <nav class="hero-nav">
+    <a href="#espresso">Espresso</a>
+    <a href="#lattes">Lattes</a>
+    <a href="#cocoa">Hot Cocoa</a>
+    <a href="#frappes">Frappes</a>
+    <a href="#waffles">Waffles</a>
+    <a href="#pastries">Pastries</a>
+    <a href="#sandwiches">Sandwiches</a>
+    <a href="#mains">Mains</a>
+    <a href="#drinks">Drinks</a>
+    <a href="#breakfast">Breakfast</a>
+  </nav>
+</div>
+
+<!-- STICKY NAV TABS -->
+<div class="nav-wrapper">
+  <div class="nav-tabs">
+    <a class="nav-tab active" href="#espresso">Espresso</a>
+    <a class="nav-tab" href="#lattes">Lattes</a>
+    <a class="nav-tab" href="#cocoa">Hot Cocoa</a>
+    <a class="nav-tab" href="#frappes">Frappes</a>
+    <a class="nav-tab" href="#waffles">Waffles</a>
+    <a class="nav-tab" href="#pastries">Pastries</a>
+    <a class="nav-tab" href="#sandwiches">Sandwiches</a>
+    <a class="nav-tab" href="#mains">Mains</a>
+    <a class="nav-tab" href="#drinks">Drinks</a>
+    <a class="nav-tab" href="#breakfast">Breakfast</a>
+  </div>
+</div>
+
+<!-- CONTENT -->
+<div class="content">
+
+  <!-- 01 ESPRESSO -->
+  <div class="section" id="espresso">
+    <div class="section-header">
+      <div class="section-number">01</div>
+      <h2 class="section-title">Espresso &amp; <em>Coffee</em></h2>
+    </div>
+    <div class="section-rule"></div>
+    <div class="size-note">XS 10oz · SM 12oz · MD 16oz — Hot</div>
+    <div class="items-grid">
+      <div class="menu-item"><div class="item-dot"></div><div><div class="item-name">Cappuccino</div></div></div>
+      <div class="menu-item"><div class="item-dot"></div><div><div class="item-name">Café Con Leche</div></div></div>
+      <div class="menu-item"><div class="item-dot"></div><div><div class="item-name">Espresso Macchiato</div></div></div>
+      <div class="menu-item"><div class="item-dot"></div><div><div class="item-name">Drip Coffee</div></div></div>
+      <div class="menu-item"><div class="item-dot"></div><div><div class="item-name">Americano</div></div></div>
+      <div class="menu-item"><div class="item-dot"></div><div><div class="item-name">Cold Brew</div><span class="item-note">Iced</span></div></div>
+      <div class="menu-item"><div class="item-dot"></div><div><div class="item-name">Affogato</div></div></div>
+    </div>
+  </div>
+
+  <!-- 02 LATTES -->
+  <div class="section" id="lattes">
+    <div class="section-header">
+      <div class="section-number">02</div>
+      <h2 class="section-title">Lattes &amp; <em>Specialties</em></h2>
+    </div>
+    <div class="section-rule"></div>
+    <div class="size-note">SM 12oz · MD 16oz · LG 20oz — Hot or Iced</div>
+    <div class="items-grid">
+      <div class="menu-item"><div class="item-dot"></div><div><div class="item-name">Latte</div></div></div>
+      <div class="menu-item"><div class="item-dot"></div><div><div class="item-name">Vanilla Latte</div></div></div>
+      <div class="menu-item"><div class="item-dot"></div><div><div class="item-name">Salted Caramel Latte</div></div></div>
+      <div class="menu-item"><div class="item-dot"></div><div><div class="item-name">Chai Latte</div></div></div>
+      <div class="menu-item"><div class="item-dot"></div><div><div class="item-name">Matcha Latte</div></div></div>
+      <div class="menu-item"><div class="item-dot"></div><div><div class="item-name">Café Mocha</div></div></div>
+      <div class="menu-item"><div class="item-dot"></div><div><div class="item-name">Caramel Macchiato</div></div></div>
+      <div class="menu-item"><div class="item-dot"></div><div><div class="item-name">Nutella Latte*</div></div></div>
+      <div class="menu-item"><div class="item-dot"></div><div><div class="item-name">Saigon Latte*</div></div></div>
+      <div class="menu-item"><div class="item-dot"></div><div><div class="item-name">Protein Latte*</div></div></div>
+      <div class="menu-item"><div class="item-dot"></div><div><div class="item-name">Keto Latte</div></div></div>
+    </div>
+  </div>
+
+  <!-- 03 HOT COCOA -->
+  <div class="section" id="cocoa">
+    <div class="section-header">
+      <div class="section-number">03</div>
+      <h2 class="section-title">Hot <em>Cocoa</em></h2>
+    </div>
+    <div class="section-rule"></div>
+    <div class="size-note">SM 12oz · MD 16oz · LG 20oz</div>
+    <div class="items-grid">
+      <div class="menu-item"><div class="item-dot"></div><div><div class="item-name">Hot Cocoa</div></div></div>
+      <div class="menu-item"><div class="item-dot"></div><div><div class="item-name">Nutella Hot Cocoa</div></div></div>
+      <div class="menu-item"><div class="item-dot"></div><div><div class="item-name">Salted Caramel Hot Cocoa</div></div></div>
+    </div>
+  </div>
+
+  <!-- 04 FRAPPES -->
+  <div class="section" id="frappes">
+    <div class="section-header">
+      <div class="section-number">04</div>
+      <h2 class="section-title">Frozen <em>Frappes</em></h2>
+    </div>
+    <div class="section-rule"></div>
+    <div class="size-note">MD 16oz · LG 20oz</div>
+    <div class="items-grid">
+      <div class="menu-item"><div class="item-dot"></div><div><div class="item-name">Caramel Frappe</div></div></div>
+      <div class="menu-item"><div class="item-dot"></div><div><div class="item-name">Mocha Frappe</div></div></div>
+      <div class="menu-item"><div class="item-dot"></div><div><div class="item-name">Matcha Frappe</div></div></div>
+      <div class="menu-item"><div class="item-dot"></div><div><div class="item-name">Vanilla Frappe</div><span class="item-note">No caffeine</span></div></div>
+    </div>
+  </div>
+
+  <!-- 05 WAFFLES -->
+  <div class="section" id="waffles">
+    <div class="section-header">
+      <div class="section-number">05</div>
+      <h2 class="section-title">Waffles &amp; <em>Pancakes</em></h2>
+    </div>
+    <div class="section-rule"></div>
+    <div class="items-grid">
+      <div class="menu-item"><div class="item-dot"></div><div><div class="item-name">Suplee Pancake</div></div></div>
+      <div class="menu-item"><div class="item-dot"></div><div><div class="item-name">Waffle</div></div></div>
+      <div class="menu-item"><div class="item-dot"></div><div><div class="item-name">Protein Waffle</div></div></div>
+      <div class="menu-item"><div class="item-dot"></div><div><div class="item-name">Roasted Pecan Waffle</div></div></div>
+      <div class="menu-item"><div class="item-dot"></div><div><div class="item-name">Roasted Almond Waffle</div></div></div>
+      <div class="menu-item"><div class="item-dot"></div><div><div class="item-name">Choc Chip Waffle with Banana</div></div></div>
+      <div class="menu-item"><div class="item-dot"></div><div><div class="item-name">Nutella Waffle with Banana</div></div></div>
+      <div class="menu-item"><div class="item-dot"></div><div><div class="item-name">Ice Cream Waffle</div><span class="item-note">Choose 2: Vanilla · Chocolate · Strawberry</span></div></div>
+    </div>
+  </div>
+
+  <!-- 06 PASTRIES -->
+  <div class="section" id="pastries">
+    <div class="section-header">
+      <div class="section-number">06</div>
+      <h2 class="section-title">Pastries &amp; <em>Desserts</em></h2>
+    </div>
+    <div class="section-rule"></div>
+    <div class="items-grid">
+      <div class="menu-item"><div class="item-dot"></div><div><div class="item-name">Butter Croissant</div></div></div>
+      <div class="menu-item"><div class="item-dot"></div><div><div class="item-name">Almond Croissant</div></div></div>
+      <div class="menu-item"><div class="item-dot"></div><div><div class="item-name">Nutella Croissant</div></div></div>
+      <div class="menu-item"><div class="item-dot"></div><div><div class="item-name">Strawberry Shortcake Croissant</div></div></div>
+      <div class="menu-item"><div class="item-dot"></div><div><div class="item-name">Bagel with Cream Cheese</div></div></div>
+      <div class="menu-item"><div class="item-dot"></div><div><div class="item-name">Cheesecake</div></div></div>
+      <div class="menu-item"><div class="item-dot"></div><div><div class="item-name">Triple Chocolate</div></div></div>
+      <div class="menu-item"><div class="item-dot"></div><div><div class="item-name">Muffin</div></div></div>
+      <div class="menu-item"><div class="item-dot"></div><div><div class="item-name">Cookie</div></div></div>
+      <div class="menu-item"><div class="item-dot"></div><div><div class="item-name">Strudel</div></div></div>
+    </div>
+  </div>
+
+  <!-- 07 SANDWICHES -->
+  <div class="section" id="sandwiches">
+    <div class="section-header">
+      <div class="section-number">07</div>
+      <h2 class="section-title">Pocket &amp; Baguette <em>Sandwiches</em></h2>
+    </div>
+    <div class="section-rule"></div>
+    <div class="items-grid">
+      <div class="menu-item"><div class="item-dot"></div><div><div class="item-name">Ham &amp; Cheese Pocket</div></div></div>
+      <div class="menu-item"><div class="item-dot"></div><div><div class="item-name">Egg &amp; Cheese Pocket</div></div></div>
+      <div class="menu-item"><div class="item-dot"></div><div><div class="item-name">Egg, Ham &amp; Cheese Pocket</div></div></div>
+      <div class="menu-item"><div class="item-dot"></div><div><div class="item-name">Egg, Bacon &amp; Cheese Pocket</div></div></div>
+      <div class="menu-item"><div class="item-dot"></div><div><div class="item-name">Egg, Bacon &amp; Avocado Pocket</div></div></div>
+      <div class="menu-item"><div class="item-dot"></div><div><div class="item-name">Baguette Sandwich</div></div></div>
+    </div>
+    <div class="addons">
+      <div class="addons-label">Add-ons — tap to select</div>
+      <div class="addons-list">
+        <div class="addon-chip">Avocado</div>
+        <div class="addon-chip">Ham</div>
+        <div class="addon-chip">Bacon</div>
+        <div class="addon-chip">Cheese</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 08 MAINS -->
+  <div class="section" id="mains">
+    <div class="section-header">
+      <div class="section-number">08</div>
+      <h2 class="section-title">Mains &amp; <em>Plates</em></h2>
+    </div>
+    <div class="section-rule"></div>
+    <div class="items-grid">
+      <div class="menu-item"><div class="item-dot"></div><div><div class="item-name">Soup of the Day</div></div></div>
+      <div class="menu-item"><div class="item-dot"></div><div><div class="item-name">Risotto</div></div></div>
+      <div class="menu-item"><div class="item-dot"></div><div><div class="item-name">Pasta</div></div></div>
+      <div class="menu-item"><div class="item-dot"></div><div><div class="item-name">Chicken Caesar Salad</div></div></div>
+    </div>
+  </div>
+
+  <!-- 09 DRINKS -->
+  <div class="section" id="drinks">
+    <div class="section-header">
+      <div class="section-number">09</div>
+      <h2 class="section-title">Cold Drinks &amp; <em>Tea</em></h2>
+    </div>
+    <div class="section-rule"></div>
+    <div class="items-grid">
+      <div class="menu-item"><div class="item-dot"></div><div><div class="item-name">Lemonade*</div></div></div>
+      <div class="menu-item"><div class="item-dot"></div><div><div class="item-name">Sparkling Lemonade</div></div></div>
+      <div class="menu-item"><div class="item-dot"></div><div><div class="item-name">Frozen Lemonade</div></div></div>
+      <div class="menu-item"><div class="item-dot"></div><div><div class="item-name">Brewed Iced Tea with Lemon</div></div></div>
+      <div class="menu-item"><div class="item-dot"></div><div><div class="item-name">Honey Lemon Tea*</div></div></div>
+      <div class="menu-item"><div class="item-dot"></div><div><div class="item-name">London Fog</div></div></div>
+      <div class="menu-item"><div class="item-dot"></div><div><div class="item-name">Tea</div></div></div>
+      <div class="menu-item"><div class="item-dot"></div><div><div class="item-name">Warmer Mug</div><span class="item-note">Dine-in only</span></div></div>
+    </div>
+    <div style="margin-top:28px;">
+      <div style="font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.2em;color:var(--caramel);text-transform:uppercase;margin-bottom:14px;">Smoothies — tap to select</div>
+      <div class="smoothie-list">
+        <div class="smoothie-chip">Strawberry Banana</div>
+        <div class="smoothie-chip">Mango</div>
+        <div class="smoothie-chip">Blueberry Banana</div>
+        <div class="smoothie-chip">Blueberry Strawberry</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 10 BREAKFAST -->
+  <div class="section" id="breakfast">
+    <div class="section-header">
+      <div class="section-number">10</div>
+      <h2 class="section-title">Breakfast <em>Combos</em></h2>
+    </div>
+    <div class="section-rule"></div>
+    <div class="breakfast-banner">
+      <div class="bb-label">Available Daily</div>
+      <div class="bb-time">7:00 am – 10:30 am</div>
+    </div>
+    <div class="breakfast-items">
+      <div class="breakfast-combo"><div class="combo-name">Drip Coffee + Bagel</div></div>
+      <div class="breakfast-combo"><div class="combo-name">Drip Coffee + Croissant</div></div>
+      <div class="breakfast-combo"><div class="combo-name">Drip Coffee + Muffin</div></div>
+      <div class="breakfast-combo"><div class="combo-name">Drip Coffee + Cookie</div></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  <div style="display:flex;flex-direction:column;align-items:center;margin-bottom:14px;">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 160" width="70" height="56">
+      <path d="M72 50 L82 120 Q100 132 118 120 L128 50 Z" fill="none" stroke="#FFDB58" stroke-width="2.5" stroke-linejoin="round"/>
+      <path d="M128 68 Q150 68 150 90 Q150 112 128 112" fill="none" stroke="#FFDB58" stroke-width="2.5" stroke-linecap="round"/>
+      <path d="M88 40 Q91 30 88 20" fill="none" stroke="#95A776" stroke-width="1.8" stroke-linecap="round"/>
+      <path d="M100 38 Q103 26 100 16" fill="none" stroke="#95A776" stroke-width="1.8" stroke-linecap="round"/>
+      <path d="M112 40 Q115 30 112 20" fill="none" stroke="#95A776" stroke-width="1.8" stroke-linecap="round"/>
+      <ellipse cx="100" cy="124" rx="36" ry="5" fill="none" stroke="#FFDB58" stroke-width="2"/>
+      <circle cx="100" cy="85" r="3.5" fill="#95A776" opacity="0.9"/>
+    </svg>
+  </div>
+  <strong>Cafe Oasis</strong>
+  Made with love · Ask your barista about today's specials
+</div>
+
+<!-- BACK TO TOP -->
+<a href="#top" class="back-top" id="backTop">↑</a>
+
+<!-- TOAST NOTIFICATION -->
+<div class="toast" id="toast"></div>
+
+<script>
+  // Scroll-reveal for sections
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.08 });
+  document.querySelectorAll('.section').forEach(s => observer.observe(s));
+
+  // Active nav tab highlight on scroll
+  const navTabs = document.querySelectorAll('.nav-tab');
+  const sectionIds = ['espresso','lattes','cocoa','frappes','waffles','pastries','sandwiches','mains','drinks','breakfast'];
+  const navObserver = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        navTabs.forEach(t => t.classList.remove('active'));
+        const match = document.querySelector(`.nav-tab[href="#${e.target.id}"]`);
+        if (match) {
+          match.classList.add('active');
+          match.scrollIntoView({ inline: 'nearest', block: 'nearest' });
+        }
+      }
+    });
+  }, { rootMargin: '-25% 0px -65% 0px' });
+  sectionIds.forEach(id => { const el = document.getElementById(id); if (el) navObserver.observe(el); });
+
+  // Toast popup
+  let toastTimer;
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    clearTimeout(toastTimer);
+    t.textContent = msg;
+    t.classList.add('show');
+    toastTimer = setTimeout(() => t.classList.remove('show'), 2000);
+  }
+
+  // Menu item click flash + toast
+  document.querySelectorAll('.menu-item').forEach(item => {
+    item.addEventListener('click', () => {
+      const name = item.querySelector('.item-name').textContent;
+      item.classList.add('flash');
+      setTimeout(() => item.classList.remove('flash'), 350);
+      showToast('✦  ' + name);
+    });
+  });
+
+  // Add-on chip toggle
+  document.querySelectorAll('.addon-chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      chip.classList.toggle('selected');
+      showToast(chip.classList.contains('selected')
+        ? '+ ' + chip.textContent + ' added'
+        : '– ' + chip.textContent + ' removed');
+    });
+  });
+
+  // Smoothie chip toggle
+  document.querySelectorAll('.smoothie-chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      document.querySelectorAll('.smoothie-chip').forEach(c => c.classList.remove('selected'));
+      chip.classList.add('selected');
+      showToast('✦  ' + chip.textContent + ' Smoothie');
+    });
+  });
+
+  // Breakfast combo click
+  document.querySelectorAll('.breakfast-combo').forEach(combo => {
+    combo.addEventListener('click', () => {
+      document.querySelectorAll('.breakfast-combo').forEach(c => c.classList.remove('selected'));
+      combo.classList.add('selected');
+      showToast('✦  ' + combo.querySelector('.combo-name').textContent);
+    });
+  });
+
+  // Back to top button
+  const backTop = document.getElementById('backTop');
+  window.addEventListener('scroll', () => {
+    backTop.classList.toggle('visible', window.scrollY > 400);
+  });
+</script>
+</body>
+</html>
