@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu - Café Oasis</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <span class="logo-icon">☕</span>
+                    <div>
+                        <h1>Café Oasis</h1>
+                        <p class="tagline">Your Daily Escape</p>
+                    </div>
+                </div>
+                <nav class="nav">
+                    <a href="index.html" class="nav-link">Home</a>
+                    <a href="menu.html" class="nav-link active">Menu</a>
+                    <a href="careers.html" class="nav-link">We're Hiring</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Menu Section -->
+    <section class="menu-section">
+        <div class="container">
+            <h2>Our Menu</h2>
+            
+            <!-- Category Tabs -->
+            <div class="category-tabs">
+                <button class="tab-button active" data-category="Coffee">Coffee</button>
+                <button class="tab-button" data-category="Frappe">Frappe</button>
+                <button class="tab-button" data-category="Non-Coffee">Non-Coffee</button>
+                <button class="tab-button" data-category="Refreshment">Refreshment</button>
+                <button class="tab-button" data-category="Tea">Tea</button>
+                <button class="tab-button" data-category="Breakfast">Breakfast Combo</button>
+                <button class="tab-button" data-category="All-Day-Brunch">All-Day-Brunch</button>
+                <button class="tab-button" data-category="Bakery">Bakery</button>
+            </div>
+
+            <!-- Menu Items Grid -->
+            <div class="menu-items-grid" id="menuGrid">
+                <!-- Items will be populated by JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>Café Oasis</h4>
+                    <p>Your daily escape with handcrafted coffee and carefully brewed moments.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="menu.html">Menu</a></li>
+                        <li><a href="careers.html">Careers</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Contact</h4>
+                    <p>Email: info@cafeoasis.com</p>
+                    <p>Phone: (555) 123-4567</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Café Oasis. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="menu-data.js"></script>
+    <script src="menu.js"></script>
+</body>
+</html>
